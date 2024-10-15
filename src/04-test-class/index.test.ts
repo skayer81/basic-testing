@@ -112,6 +112,7 @@ describe('BankAccount', () => {
     const bankAccount = getBankAccount(0);
     mockRandom.mockImplementationOnce(() => newBalance);
     mockRandom.mockImplementationOnce(() => requestFailed);
+    expect.assertions(1);
     try {
       await bankAccount.synchronizeBalance();
     } catch (error) {
