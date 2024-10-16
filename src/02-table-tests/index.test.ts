@@ -14,8 +14,22 @@ const testCases = [
   { a: 'q', b: 10, action: Action.Add, expected: null },
 ];
 
+const wrongTestCases = [
+  { a: 15, b: 15, action: Action.Add, expected: 77 },
+  { a: 139, b: 139, action: Action.Subtract, expected: 77 },
+  { a: 11, b: 11, action: Action.Multiply, expected: 77 },
+  { a: 38.5, b: 1, action: Action.Divide, expected: 77 },
+  { a: 2, b: 2, action: Action.Exponentiate, expected: 1024 },
+];
+
 describe('simpleCalculator', () => {
   test.each(testCases)('table tests', ({ a, b, action, expected }) => {
     expect(simpleCalculator({ a, b, action })).toBe(expected);
   });
+  test.each(wrongTestCases)(
+    'wrong table tests',
+    ({ a, b, action, expected }) => {
+      expect(simpleCalculator({ a, b, action })).not.toBe(expected);
+    },
+  );
 });
