@@ -14,6 +14,11 @@ jest.mock('lodash', () => {
 });
 
 describe('throttledGetDataFromApi', () => {
+  afterAll(() => {
+    jest.unmock('lodash');
+    jest.unmock('axios');
+  });
+
   test('should create instance with provided base url', async () => {
     const baseURL = 'https://jsonplaceholder.typicode.com';
     const mockCreate = jest.spyOn(axios, 'create');
