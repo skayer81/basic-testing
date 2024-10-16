@@ -1,15 +1,19 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { throttledGetDataFromApi } from './index';
 
+type f = (s: string) => AxiosResponse;
+
+jest.mock('lodash', () => {
+  const originalModule = jest.requireActual('lodash');
+  const fakethrottle = (fn: f) => fn;
+  return {
+    __esModule: true,
+    ...originalModule,
+    throttle: jest.fn(fakethrottle),
+  };
+});
+
 describe('throttledGetDataFromApi', () => {
-  beforeAll(() => {
-    jest.useFakeTimers();
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
-  });
-
   test('should create instance with provided base url', async () => {
     const baseURL = 'https://jsonplaceholder.typicode.com';
     const mockCreate = jest.spyOn(axios, 'create');
@@ -18,8 +22,6 @@ describe('throttledGetDataFromApi', () => {
     mockGet.mockReturnValue(Promise.resolve({ data: expect.anything() }));
 
     await throttledGetDataFromApi(expect.any(String));
-
-    jest.runAllTimers();
 
     expect(mockCreate).toBeCalledWith({ baseURL: baseURL });
     expect(mockCreate.mock.results[0]?.value.defaults.baseURL).toBe(baseURL);
@@ -32,8 +34,6 @@ describe('throttledGetDataFromApi', () => {
     mockGet.mockReturnValue(Promise.resolve({ data: expect.anything() }));
 
     await throttledGetDataFromApi(url);
-
-    jest.runAllTimers();
 
     expect(mockGet).toBeCalledWith(url);
   });
@@ -48,8 +48,6 @@ describe('throttledGetDataFromApi', () => {
     mockGet.mockReturnValue(Promise.resolve({ data: mockData }));
 
     const result = await throttledGetDataFromApi(expect.any(String));
-
-    jest.runAllTimers();
 
     expect(result).toEqual(mockData);
   });

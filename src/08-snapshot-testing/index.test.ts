@@ -25,7 +25,7 @@ describe('generateLinkedList', () => {
 
   // Check match by comparison with snapshot
   test('should generate linked list from values 2', () => {
-    const mokArr = [1, 2, 3, 4, 5];
+    const mokArr = [5, 4, 3, 2, 1];
     const tree = generateLinkedList(mokArr);
     expect(tree).toMatchSnapshot();
   });
