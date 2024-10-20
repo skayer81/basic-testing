@@ -33,14 +33,19 @@ describe('throttledGetDataFromApi', () => {
   });
 
   test('should perform request to correct provided url', async () => {
-    const url = 'test URL';
+    const testurl = 'test URL';
+    const testurl2 = 'test URL2';
     const mockGet = jest.spyOn(axios.Axios.prototype, 'get');
 
     mockGet.mockReturnValue(Promise.resolve({ data: expect.anything() }));
 
-    await throttledGetDataFromApi(url);
+    await throttledGetDataFromApi(testurl);
 
-    expect(mockGet).toBeCalledWith(url);
+    expect(mockGet).toBeCalledWith(testurl);
+
+    await throttledGetDataFromApi(testurl2);
+
+    expect(mockGet).toBeCalledWith(testurl2);
   });
 
   test('should return response data', async () => {
@@ -48,12 +53,23 @@ describe('throttledGetDataFromApi', () => {
       a: 'test1',
       b: 'test2',
     };
+    const mockData2 = {
+      c: 'test3',
+      d: 'test4',
+    };
 
     const mockGet = jest.spyOn(axios.Axios.prototype, 'get');
+
     mockGet.mockReturnValue(Promise.resolve({ data: mockData }));
 
-    const result = await throttledGetDataFromApi(expect.any(String));
+    let result = await throttledGetDataFromApi(expect.any(String));
 
     expect(result).toEqual(mockData);
+
+    mockGet.mockReturnValue(Promise.resolve({ data: mockData2 }));
+
+    result = await throttledGetDataFromApi(expect.any(String));
+
+    expect(result).toEqual(mockData2);
   });
 });
